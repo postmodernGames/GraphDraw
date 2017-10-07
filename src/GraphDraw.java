@@ -12,11 +12,11 @@ public class GraphDraw extends JFrame {
     ArrayList<Node> nodeList = new ArrayList<Node>();
     ArrayList<Edge> edgeList = new ArrayList<Edge>();
 
-    double kspring =0.01;
-    double kelec = 10000;
-    int L = 50;
+    double kspring =.1;
+    double kelec = 1;
+    int L = 100;
     double TIMESTEP = 0.1;
-    int nodeWidth = 40;
+    int nodeWidth = 24;
     int nodeHeight = nodeWidth;
     private BufferStrategy bs;
 
@@ -46,17 +46,17 @@ public class GraphDraw extends JFrame {
     GraphDraw() {
         nodeList.add(new Node(50, 100));
         nodeList.add(new Node(150, 100));
-  //      nodeList.add(new Node(250, 200));
-   //     nodeList.add(new Node(50, 200));
-   //     nodeList.add(new Node(150, 300));
+        nodeList.add(new Node(250, 200));
+        nodeList.add(new Node(50, 200));
+        nodeList.add(new Node(150, 300));
 
         edgeList.add(new Edge(0, 1));
-     /*   edgeList.add(new Edge(0, 2));
+        edgeList.add(new Edge(0, 2));
         edgeList.add(new Edge(0, 4));
         edgeList.add(new Edge(1, 3));
         edgeList.add(new Edge(2, 3));
         edgeList.add(new Edge(2, 4));
-        edgeList.add(new Edge(3, 4));*/
+        edgeList.add(new Edge(3, 4));
 
 
         Canvas canvas = new Canvas();
@@ -83,17 +83,20 @@ public class GraphDraw extends JFrame {
 
 
     public void update() {
-        for (int i = 0; i < nodeList.size() - 1; i++) {
-            for (int j = i + 1; j < nodeList.size(); j++) {
-                if (isConnected(i, j, edgeList)) {
-                  //  nodeList.get(i).force.add(springForce(nodeList.get(i).position, nodeList.get(j).position));
-                }
-                nodeList.get(i).force.add(elecForce(nodeList.get(i).position, nodeList.get(j).position));
+        for (int i = 0; i < nodeList.size(); i++) {
+            for (int j = 0; j < nodeList.size(); j++) {
+                if(i!=j){
+                    if (isConnected(i, j, edgeList)) {
+                        nodeList.get(i).force.add(springForce(nodeList.get(i).position, nodeList.get(j).position));
+                    }
+                    else nodeList.get(i).force.add(elecForce(nodeList.get(i).position, nodeList.get(j).position));
 
-                nodeList.get(j).force.x = -nodeList.get(i).force.x;
-                nodeList.get(j).force.y = -nodeList.get(i).force.y;
+
+                }
             }
         }
+        int accumx =0;
+        int accumy = 0;
         for (int i = 0; i < nodeList.size(); i++) {
             Node node = nodeList.get(i);
             node.velocity.x += node.force.x * TIMESTEP;
@@ -101,12 +104,24 @@ public class GraphDraw extends JFrame {
             node.position.x += node.velocity.x * TIMESTEP;
             node.position.y += node.velocity.y * TIMESTEP;
             node.force.reset();
+            accumx+=node.position.x;
+            accumy+=node.position.y;
+        }
+        accumx/=nodeList.size();
+        accumy/=nodeList.size();
+
+        for (int i = 0; i < nodeList.size(); i++) {
+            Node node = nodeList.get(i);
+            node.position.x-=accumx;
+            node.position.x+=250;
+            node.position.y-=accumy;
+            node.position.y+=250;
         }
     }
 
     public Vector springForce(Vector u, Vector v) {
         double mag = kspring * Math.abs(Vector.normDiff(u, v) - L);
-        return new Vector(-(int) Math.floor(mag * (u.x - v.x)), -(int) Math.floor(mag * (u.y - v.y)));
+        return new Vector(-(int) Math.floor(mag * (u.x - v.x)/Math.abs(Vector.normDiff(u, v))), -(int) Math.floor(mag * (u.y - v.y))/Math.abs(Vector.normDiff(u, v)));
     }
 
     public Vector elecForce(Vector u, Vector v) {
