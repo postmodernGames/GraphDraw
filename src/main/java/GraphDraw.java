@@ -29,36 +29,8 @@ public class GraphDraw extends JFrame {
     int frameHeight;
     Canvas canvas;
     GamePanel jpnl;
-    class Node {
-        Vector position;
-        Vector oldposition;
-        Vector velocity;
-        Vector force;
-        Vector oldforce;
-        String label;
-        ArrayList<Vector> arrowList= new ArrayList<Vector>();
 
-        Node(int x, int y, String label) {
-            position = new Vector(x, y);
-            oldposition = new Vector(x,y);
-            velocity = new Vector(0, 0);
-            force = new Vector(0, 0);
-            oldforce = new Vector(0,0);
-            this.label = label;
-        }
 
-    }
-
-    class Edge {
-        int i;
-        int j;
-        String label;
-        Edge(int i, int j, String label) {
-            this.i = i;
-            this.j = j;
-            this.label = label;
-        }
-    }
 
     @Override
     public void paint(Graphics g){
@@ -181,31 +153,12 @@ public class GraphDraw extends JFrame {
 
     }
 
-    public Vector springForce(Vector u, Vector v) {
-        double mag = kspring * Math.abs(Vector.normDiff(u, v) - L);
-        return new Vector(-(int) Math.floor(mag * (u.x - v.x)/Math.abs(Vector.normDiff(u, v))), -(int) Math.floor(mag * (u.y - v.y))/Math.abs(Vector.normDiff(u, v)));
-    }
-
-    public Vector elecForce(Vector u, Vector v) {
-        double mag = kelec / Math.pow(Vector.normDiff(u, v),3);
-        return new Vector( mag *( u.x - v.x),  mag *(u.y - v.y));
-    }
-
     public boolean isConnected(int i, int j, ArrayList<Edge> edgeList) {
         for (Edge edge : edgeList) {
             if (((edge.i == i) && (edge.j == j)) || ((edge.i == j) && (edge.j == i))) return true;
         }
         return false;
     }
-
-    public void center() {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension frameSize = getSize();
-        int x = (screenSize.width - frameSize.width) / 2;
-        int y = (screenSize.height - frameSize.height) / 2;
-        setLocation(x, y);
-    }
-
 
     private void renderFrame() {
         do {
@@ -302,7 +255,7 @@ public class GraphDraw extends JFrame {
     }
 
     public static void main(String[] args){
-        GraphDraw graphDraw = new GraphDraw();
+        final GraphDraw graphDraw = new GraphDraw();
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -319,7 +272,9 @@ public class GraphDraw extends JFrame {
                         graphDraw.update();
                         lag -= MS_PER_UPDATE;
                 //    }
-
+                    try{
+                        Thread.sleep(100);
+                    }catch(Exception e){}
 
                 }
             }
