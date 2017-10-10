@@ -7,6 +7,10 @@ import java.util.ArrayList;
  */
 public class FSMNode  {
     boolean acceptFlag = false;
-    ArrayList<FSMEdge> outList = new ArrayList<FSMEdge>();
+    public ArrayList<FSMEdge> outList = new ArrayList<FSMEdge>();
     ArrayList<FSMNode> inList = new ArrayList<FSMNode>();
+
+    public FSMNode(ArrayList<FSMEdge> outList){
+        this.outList = outList;
+    }
 }
