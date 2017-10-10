@@ -1,10 +1,11 @@
-import javax.swing.*;
+package GraphDraw;
+
 import java.awt.*;
 import java.awt.geom.*;
 
-public class Arrow  extends ApplicationFrame{
+public class Arrow  extends ApplicationFrame {
     Arrow(){
-        super("Arrow");
+        super("GraphDraw.Arrow");
         setSize(400,400);
         center();
         setBackground(new Color((float)232/255,(float)237/255,(float)175/255));
