@@ -14,7 +14,6 @@ public class Arrow  extends ApplicationFrame {
 
 
 
-
     public GeneralPath getArrow(double fromX, double fromY, double toX, double toY){
         GeneralPath path = new GeneralPath(Path2D.WIND_EVEN_ODD);
         path.moveTo(fromX,fromY);
@@ -33,6 +32,10 @@ public class Arrow  extends ApplicationFrame {
         path.lineTo(v2x,v2y);
         return path;
     }
+
+
+
+
 
     Point2D point = new Point2D.Double();
     public Point2D toPolarRadians(Point2D cart){
